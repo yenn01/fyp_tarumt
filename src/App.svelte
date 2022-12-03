@@ -8,6 +8,7 @@
     import {Route} from 'tinro'; 
     import Input from './components/Input.svelte'
     import RouteTransition from './components/RouteTransition.svelte';
+    import Scrapping from './components/Scrapping.svelte';
 
     const handleSubmission = (eventMsg) => {
         console.log(eventMsg)
@@ -29,7 +30,7 @@
                 <Route path="/">
                     <Input on:evt_submit={handleSubmission}></Input>
                 </Route>
-                <Route path="/scrapping">Scrapping...</Route>
+                <Route path="/scrapping"><Scrapping></Scrapping></Route>
             </RouteTransition>
         </div>
     </div>
@@ -54,6 +55,7 @@
 		margin: 0 auto;
         min-width: 500px;
         min-height: 60vh;
+        font-family: monospace;
 	}
 
 	@media (min-width: 640px) {
@@ -66,7 +68,8 @@
         display:flex;
         flex-direction: column;
         align-items: center;
-
+        min-height:50vh;
+        justify-content: center;
     }
 
     .cont_body {
