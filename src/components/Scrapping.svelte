@@ -1,14 +1,26 @@
 <script>
     import {Jellyfish} from 'svelte-loading-spinners';
-    const dotLoading = () => {
-        
-    }
+    import { fade } from 'svelte/transition';
+    import {store_topic} from '../stores/topic';
+    
+    export let topic = "";
+    
 </script>
-<div class="tab_scrapping">
-    <Jellyfish  size="140" color="#FF3E00" unit="px" duration="3s"></Jellyfish>
-    <h3>Scrapping...</h3>
+<div class="tab_scrapping" transition:fade>
+    <h3>{$store_topic}</h3>
+    <Jellyfish size="18" color="rgb(255, 161, 120)" unit="rem" duration="3s"></Jellyfish>
+    <h1 id='txt_scrapping'>Scrapping...</h1>
+    <div class="cont_scrapProgress">
+
+    </div>
 </div>
 <style>
+
+.wrapper {
+    width:none;
+}
+
+
 
 .tab-scrapping {
     

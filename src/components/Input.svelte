@@ -1,17 +1,28 @@
 
 <script>
 import {createEventDispatcher} from 'svelte';
-
-
+import {store_topic} from '../stores/topic'
+import { fade } from 'svelte/transition';
+import {router} from 'tinro';
+let userInput = "";
 
 const dispatch = createEventDispatcher();
 
- $: userInput = "";
+
+ function send() {
+    $store_topic = userInput
+    dispatch('evt_submit',userInput);  
+    router.goto("/scrapping")
+    console.log("wtf"+userInput)
+ }
+
+ $: userInput, console.log(userInput)
+ 
 
 </script>
 
 
-<div class="tab_input">
+<div class="tab_input" transition:fade>
     <h1 class="cont_topic">What topics' sentiment would you like to know about?</h1>
     <form>
     <div class="cont_input">
@@ -22,8 +33,8 @@ const dispatch = createEventDispatcher();
         
     </div>
     <div class="cont_submit">
-        <button class="btn_submit" on:click|preventDefault={()=> {dispatch('evt_submit',userInput);  window.location = '/scrapping';}} >
-            button
+        <button class="btn_submit" on:click|preventDefault={send} >
+            Submit
         </button>
     </div>
     </form>
@@ -61,6 +72,19 @@ const dispatch = createEventDispatcher();
     input:focus {
         border-bottom: 2px solid black;
         transition: 0.2s ease-in-out;
+    }
+
+    button {
+        font-size: 1.2rem;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+    }
+
+    button:hover {
+        background-color:var(--theme-default);
+        transition: 0.3s ease-in-out;
     }
 
 </style>
