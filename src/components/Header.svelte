@@ -17,7 +17,7 @@ $: src = './logo_b.png'
     }
 
     .logo {
-        width:20vw;
+        width:18vw;
     }
 
 </style>

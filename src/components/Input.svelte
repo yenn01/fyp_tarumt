@@ -16,9 +16,9 @@ const dispatch = createEventDispatcher();
     console.log("wtf"+userInput)
  }
 
- $: userInput, console.log(userInput)
+ //$: userInput, console.log(userInput)
  
-
+ 
 </script>
 
 
@@ -41,6 +41,8 @@ const dispatch = createEventDispatcher();
 </div>
 
 <style>
+
+
     
     .cont_topic {
         display: flex;

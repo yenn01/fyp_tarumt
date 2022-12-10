@@ -1,23 +1,46 @@
 <script>
     import anime from 'animejs/lib/anime.es.js';
+    import { fade, fly } from 'svelte/transition';
+
+    import {Route} from 'tinro'; 
+    import {router} from 'tinro';
+
     import Toast from "./components/Toast.svelte";
     import {notifications} from './stores/notifications.js'
-    import { fade, fly } from 'svelte/transition';
     import Footer from './components/Footer.svelte';
     import Header from './components/Header.svelte';
-    import {Route} from 'tinro'; 
     import Input from './components/Input.svelte'
     import RouteTransition from './components/RouteTransition.svelte';
     import Scrapping from './components/Scrapping.svelte';
+    import Results from './components/Results.svelte'
+    
     import {store_topic} from './stores/topic'
+    import {store_results} from './stores/results'  
+    import {store_tractions}   from './stores/tractions'
 
     var socket = io();
     socket.on('connect', function() {
         console.log("Connected to WebSocket.")
     });
 
+    socket.on('completed_scrape',() => {
+        notifications.danger('Scrape completed',4000)
+        console.log("Scrape completed")
+    })
+
+
+    let tweets;
+    
+    socket.on('high_traction',(response) => {
+        console.log(response)
+        tweets = JSON.parse(response)
+    })
+
+
+    
+
     const handleSubmission = (eventMsg) => {
-        console.log(eventMsg.detail)
+        //console.log(eventMsg.detail)
         getResults(eventMsg.detail)
        
         
@@ -29,12 +52,13 @@
              notifications.danger('No topics given.',4000)
              return;        
         }
-        console.log(temp)
-        console.log(encodeURI(temp))
+
         let url = "/scrape?text="+encodeURI(temp)
         const res = await fetch(url).then(res => res.json()).then(
             parsed => {
                 console.log(parsed)
+                $store_results = parsed
+                router.goto("/results")
                 //response = arrMerge(parsed.labels,parsed.scores)
                 //console.log(JSON.stringify(response))
             }
@@ -42,18 +66,6 @@
             console.error(e)
         })
     }
-
-    function arrMerge(k, v) {
-
-        var obj = {};
-
-        for (var i = 0; i < k.length; i++) {
-            obj[k[i]] = v[i];
-        }
-
-        return obj;
-    }
-
 
 </script>
 
@@ -71,6 +83,9 @@
                     <Input on:evt_submit={handleSubmission}></Input>
                 </Route></div>
                 <div><Route path="/scrapping"><Scrapping></Scrapping></Route>
+                </div>
+                <div>
+                    <Route path="/results"><Results {tweets}></Results></Route>
                 </div>
         </div>
     </div>
@@ -95,8 +110,8 @@
     
 	main {
 		text-align: center;
-		padding: 0.2em;
-		max-width: 500px;
+		padding: 0.2rem 2rem;
+		max-width: 992px;
 		margin: 0 auto;
         min-width: 500px;
         min-height: 60vh;
@@ -122,6 +137,7 @@
         grid-template-columns: 1fr;
 grid-template-rows: 1fr;
 justify-items: center;
+width:100%;
     }
 
     .cont_body > * {
