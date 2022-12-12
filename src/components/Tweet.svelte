@@ -36,7 +36,7 @@
     .cont_tweet {
         border-radius: 6px;
         margin:1rem;
-        background-color: lightgray;
+        background-color: rgb(240, 240, 240);
        padding:1rem;
     }
 

@@ -1,14 +1,15 @@
 <script>
 
-    import {store_elapsedTime} from "../stores/elapsedTime"
+    import {store_elapsedTime} from "../stores/elapsedTime"    
     import {store_results} from "../stores/results"
 
 let elapsedSeconds = 0
 let elapsedMinutes = 0
 
-export let start= new Date();
 
-let elapsedTimeIntervalRef = setInterval(() => {
+export let start;
+
+const stopwatch = () => {
     console.log("time counting.")
     if(start!=null) {
         let endTime = new Date();
@@ -19,15 +20,29 @@ let elapsedTimeIntervalRef = setInterval(() => {
         elapsedMinutes = minTimeDiff % 60;
         $store_elapsedTime = String(elapsedMinutes).padStart(2, '0').concat(":",String(elapsedSeconds).padStart(2, '0'))
     }
-}, 1000);
+}
+
+let elapsedTimeIntervalRef = null;
 
 export const stopElapse = () => {
     console.log("try stop")
-    clearInterval(elapsedTimeIntervalRef)
+    clearInterval(elapsedTimeIntervalRef);
+    elapsedTimeIntervalRef = null;
+    
 }
 
+const checkTimer = () => {
+    console.log("Stopwatch Reset Try")
+    if(elapsedTimeIntervalRef === null) {
+        console.log("Stopwatch Reset Called")
+        $store_elapsedTime = "";
+        elapsedTimeIntervalRef = setInterval(stopwatch,1000)
+    }
+}
 
- $: $store_results && stopElapse()
+$: $store_results && stopElapse()
+$: start && checkTimer()
+ 
 
 
 </script>

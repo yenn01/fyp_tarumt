@@ -18,15 +18,15 @@
     import {store_results} from './stores/results'  
     import { store_elapsedTime } from './stores/elapsedTime';
 
-    var socket = io();
-
+    let socket = io();
+    let start;
 
     socket.on('connect', function() {
         console.log("Connected to WebSocket.")
     });
 
     socket.on('completed_scrape',() => {
-        notifications.danger('Scrape completed',4000)
+        notifications.success('Scrape completed',4000)
         console.log("Scrape completed")
     })
 
@@ -43,8 +43,10 @@
 
     const handleSubmission = (eventMsg) => {
         //console.log(eventMsg.detail)
+        start = new Date()
+        console.log(start)
         getResults(eventMsg.detail)
-       
+        
         
     }
 
@@ -87,9 +89,9 @@
                 <div><Route path="/">
                     <Input on:evt_submit={handleSubmission}></Input>
                 </Route></div>
-                <div><Route path="/scrapping"><Scrapping></Scrapping></Route>
+                <div><Route path="/scrapping"><Scrapping bind:start={start}></Scrapping></Route>
                 </div>
-                <div>
+                <div >
                     <Route path="/results"><Results {tweets}></Results></Route>
                 </div>
         </div>

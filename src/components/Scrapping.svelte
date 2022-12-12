@@ -4,9 +4,7 @@
     import {store_topic} from '../stores/topic';
     import Stopwatch from './Stopwatch.svelte';
 
-    
-    export let topic = "";
-    export let stopwatch;
+    export let start;
     
 </script>
 <div class="tab_scrapping" transition:fade>
@@ -16,7 +14,7 @@
     </div>
         <h1 id='txt_scrapping'>Analyzing...</h1>
     <div class="cont_scrapProgress">
-        <Stopwatch {stopwatch}></Stopwatch>
+        <Stopwatch bind:start={start}></Stopwatch>
     </div>
 </div>
 <style>
