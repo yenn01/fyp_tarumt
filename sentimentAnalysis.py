@@ -10,7 +10,7 @@ import nest_asyncio
 import json
 import pandas
 import re
-#nest_asyncio.apply()
+nest_asyncio.apply()
 
 
 tokenizer = AutoTokenizer.from_pretrained("cardiffnlp/twitter-roberta-base-sentiment-latest")
@@ -68,7 +68,7 @@ def clean_process(df):
 
 
     #Convert emojis to text, remove any emails, phone numbers and urls
-    #sort_df["tweet"] = sort_df["tweet"].apply(clean,lower=True,no_line_breaks=True,no_urls=True,no_emails=True,no_phone_numbers=True)
+    sort_df["tweet"] = sort_df["tweet"].apply(clean,lower=True,no_line_breaks=True,no_urls=True,no_emails=True,no_phone_numbers=True)
     
     #Remove mentions in tweet
     sort_df["tweet"] = sort_df["tweet"].apply(rmMention)

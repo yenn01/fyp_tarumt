@@ -11,30 +11,52 @@
         </div>
         <div class="cont_bot_tweet">
 
-           <div> Likes: {tweet.nlikes}</div>
-           <div> Replies: {tweet.nreplies}</div>
-           <div> Retweets: {tweet.nretweets}</div>
+           <div> Likes: <b>{tweet.nlikes}</b></div>
+           <div> Replies: <b>{tweet.nreplies}</b></div>
+           <div> Retweets: <b>{tweet.nretweets}</b></div>
            
         </div>
         <div class="cont_label">
-            <div>{tweet.sentiment}</div>
+            <div class="label" style="background-color: {
+                tweet.sentiment === 'negative' ? "rgb(255, 127, 120)" 
+                : tweet.sentiment === 'positive' ? "rgb(172, 255, 120)"
+                : tweet.sentiment === 'neutral' ? "rgb(120, 224, 255)" 
+                :"rgb(255, 161, 120)"}
+            ">{tweet.sentiment.toUpperCase()}</div>
         </div>
     </div>
 
 
 <style>
 
+    .cont_top_tweet {
+        font-weight:800;
+    }
+
     .cont_tweet {
         border-radius: 6px;
         margin:1rem;
         background-color: lightgray;
-        justify-content: space-around;
+       padding:1rem;
     }
 
     .cont_bot_tweet {
         display:flex;
         flex-direction: row;
+        justify-content: space-around;
         padding:0.5rem;
+    }
+
+    .label {
+        border-radius: 5px;
+        padding: 0.2rem 0.6rem;
+        width: 5rem;
+        font-weight:1000;
+    }
+
+    .cont_label {
+        display:flex;
+        justify-content: center;
     }
 
 </style>

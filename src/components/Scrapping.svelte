@@ -6,6 +6,7 @@
 
     
     export let topic = "";
+    export let stopwatch;
     
 </script>
 <div class="tab_scrapping" transition:fade>
@@ -15,7 +16,7 @@
     </div>
         <h1 id='txt_scrapping'>Analyzing...</h1>
     <div class="cont_scrapProgress">
-        <Stopwatch></Stopwatch>
+        <Stopwatch {stopwatch}></Stopwatch>
     </div>
 </div>
 <style>

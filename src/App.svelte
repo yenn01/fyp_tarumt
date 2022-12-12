@@ -16,9 +16,11 @@
     
     import {store_topic} from './stores/topic'
     import {store_results} from './stores/results'  
-    import {store_tractions}   from './stores/tractions'
+    import { store_elapsedTime } from './stores/elapsedTime';
 
     var socket = io();
+
+
     socket.on('connect', function() {
         console.log("Connected to WebSocket.")
     });
@@ -28,7 +30,7 @@
         console.log("Scrape completed")
     })
 
-
+    let instance;
     let tweets;
     
     socket.on('high_traction',(response) => {
@@ -58,7 +60,10 @@
             parsed => {
                 console.log(parsed)
                 $store_results = parsed
+
+
                 router.goto("/results")
+                
                 //response = arrMerge(parsed.labels,parsed.scores)
                 //console.log(JSON.stringify(response))
             }
@@ -70,7 +75,7 @@
 </script>
 
 <svelte:head>
-    <title>sens</title>
+    <title>trend</title>
 </svelte:head>
 
 <Header></Header>
@@ -111,18 +116,16 @@
 	main {
 		text-align: center;
 		padding: 0.2rem 2rem;
-		max-width: 992px;
-		margin: 0 auto;
-        min-width: 500px;
         min-height: 60vh;
         font-family: monospace;
 	}
-
-	@media (min-width: 640px) {
+/* 
+	@media (min-width: 500px) {
 		main {
 			max-width: none;
+            padding: 0.2rem 0rem;
 		}
-	}
+	} */
 
     .cont_main {
         display:flex;
