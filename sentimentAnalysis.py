@@ -38,7 +38,7 @@ def dedupe(df,threshold=0.85):
     return df_deduped,df_dupes
 
 
-def scrape(topic,limit=100):
+def scrape(topic,limit=500):
     c = twint.Config()
     c.Search = topic
     c.Limit = limit

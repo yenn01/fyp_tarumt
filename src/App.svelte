@@ -17,7 +17,7 @@
     import {store_topic} from './stores/topic'
     import {store_results} from './stores/results'  
     import { store_elapsedTime } from './stores/elapsedTime';
-
+    import { store_processing } from './stores/processing';
     let socket = io();
     let start;
 
@@ -43,6 +43,7 @@
 
     const handleSubmission = (eventMsg) => {
         //console.log(eventMsg.detail)
+        $store_processing = "scrapping"
         start = new Date()
         console.log(start)
         //getResults(eventMsg.detail)
@@ -57,8 +58,8 @@
                 //const scrapeProcess = await scrape(_topic)
                 const scrapeProcess = await (await fetch(url)).json()
                 //if(parsed.id != null) {
-                    console.log("Succeeded Scrape")
-                    console.log(scrapeProcess)
+                    //console.log("Succeeded Scrape")
+                    //console.log(scrapeProcess)
                 const analyseResults = await analysis(scrapeProcess)
                 //} 
                 return analyseResults
@@ -68,6 +69,7 @@
     } 
 
     async function analysis(_process) {
+        $store_processing = "analysing"
         console.log(_process)
         let url = "/analyse?id="+encodeURI(_process.id)
         
