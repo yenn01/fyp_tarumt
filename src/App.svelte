@@ -78,6 +78,7 @@
 
 <svelte:head>
     <title>trend</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
 </svelte:head>
 
 <Header></Header>
