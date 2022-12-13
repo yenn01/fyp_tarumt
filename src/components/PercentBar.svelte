@@ -8,10 +8,13 @@ let text = ''
 
 export const change = () => {
     console.log("Percent bar called.")
-    let total = $store_results.positive + $store_results.neutral + $store_results.negative
-    let posPercent = Math.round($store_results.positive/total * 100 * 100) / 100
-    let neuPercent = Math.round($store_results.neutral/total * 100 * 100) / 100
-    let negPercent = Math.round($store_results.negative/total * 100 * 100) / 100
+    let pos = isNaN($store_results.positive) ? 0 : $store_results.positive
+    let neu = isNaN($store_results.neutral) ? 0 : $store_results.neutral
+    let neg = isNaN($store_results.negative) ? 0 : $store_results.negative
+    let total = pos + neu + neg
+    let posPercent = Math.round(pos/total * 100 * 100) / 100
+    let neuPercent = Math.round(neu/total * 100 * 100) / 100
+    let negPercent = Math.round(neg/total * 100 * 100) / 100
 
     anime({
             targets: '#progress',
