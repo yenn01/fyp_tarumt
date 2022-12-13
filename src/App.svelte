@@ -2,6 +2,7 @@
     import anime from 'animejs/lib/anime.es.js';
     import { fade, fly } from 'svelte/transition';
 
+
     import {Route} from 'tinro'; 
     import {router} from 'tinro';
 
@@ -16,9 +17,11 @@
     
     import {store_topic} from './stores/topic'
     import {store_results} from './stores/results'  
-    import { store_elapsedTime } from './stores/elapsedTime';
+    import { store_config } from './stores/config';
     import { store_numTweets} from './stores/numTweets'
     import { store_processing } from './stores/processing';
+
+
     let socket = io({
         timeout:300000
     });
@@ -60,7 +63,8 @@
 
     async function beginAnalysis(_topic) {
         let temp = $store_topic
-        let url = "/scrape?text="+encodeURI(temp)
+        // let url = "/scrape?text="+encodeURI(temp)
+        let url = "/scrape?text="+encodeURI(temp)+"&limit="+$store_config.limit
             try {
                 //const scrapeProcess = await scrape(_topic)
                 const scrapeProcess = await (await fetch(url)).json()
@@ -78,7 +82,7 @@
     async function analysis(_process) {
         $store_processing = "analysing"
         console.log(_process)
-        let url = "/analyse?id="+encodeURI(_process.id)
+        let url = "/analyse?id="+encodeURI(_process.id)+"&model="+$store_config.model
         $store_numTweets = _process.numRow
         const res = await fetch(url).then(res => res.json()).then(
         parsed => {
@@ -144,6 +148,7 @@
 <svelte:head>
     <title>trend</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"> -->
 </svelte:head>
 
 <Header></Header>
@@ -162,7 +167,7 @@
                 </div>
         </div>
     </div>
-
+    
 </main>
 <Footer></Footer>
 

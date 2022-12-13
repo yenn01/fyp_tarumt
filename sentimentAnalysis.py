@@ -11,12 +11,18 @@ import json
 import pandas
 import re
 nest_asyncio.apply()
+import pickle
+from sklearn.feature_extraction.text import CountVectorizer
 
 
 tokenizer = AutoTokenizer.from_pretrained("cardiffnlp/twitter-roberta-base-sentiment-latest")
 model = AutoModelForSequenceClassification.from_pretrained("cardiffnlp/twitter-roberta-base-sentiment-latest")
 analysis = pipeline(task="sentiment-analysis",model=model,tokenizer=tokenizer) 
 
+filename = 'LRModel.sav'
+vec_file = 'vectorizer.pkl'
+loaded_model = pickle.load(open(filename, 'rb'))
+loaded_dict = pickle.load(open(vec_file,'rb'))
 
 app = Flask(__name__)
 app.config['SECRET_KEY']='secret!'
@@ -38,7 +44,7 @@ def dedupe(df,threshold=0.85):
     return df_deduped,df_dupes
 
 #TODO : Add limit variable changes
-def scrape(topic,limit=5000):
+def scrape(topic,limit=500):
     c = twint.Config()
     c.Search = topic
     c.Limit = limit
@@ -84,10 +90,18 @@ def s_analysis(tweet):
     analysed = analysis(tweet)
     return analysed[0]['label'], analysed[0]['score']
 
-def sentiment(df):
-    df["sentiment"],df["score"] = zip(*df["tweet"].apply(s_analysis))
+def sentiment(df,modelType="rb"):
+    if modelType == "rb":
+        df["sentiment"],df["score"] = zip(*df["tweet"].apply(s_analysis))
+    elif modelType == "lr":
+        df["sentiment"] = df["tweet"].apply(lr_analysis)
     return df
 
+def lr_analysis(tweet):
+    processTweet = [tweet]
+    vected = loaded_dict.transform(processTweet)
+    results = loaded_model.predict(vected)
+    return results[0]
 
 
 
@@ -107,12 +121,16 @@ def scrapeCall():
     try:
         global scrapped
         sentence = request.args.get('text')
+        limit = 500;
+        if 'limit' in request.args:
+            limit = int(request.args.get('limit'))
+
 
         if not sentence:
             return "Error",400
 
         #Carry out scrapping, sends completed scrape when done
-        raw = scrape(sentence)
+        raw = scrape(sentence,limit)
         
 
         #Carry out cleaning, sends completed clean when done
@@ -135,9 +153,19 @@ def analyse():
         scrappedID = int(request.args.get('id'))
         if scrapped[scrappedID].empty:
             return "Error",400
+        passedModel = "rb";
+        #Checks if the model key is passed
+        if 'model' in request.args:
+            passedModel = request.args.get('model')
+           
+              
+            
 
-        s_df = sentiment(scrapped[scrappedID])
-        score_df = s_df[s_df['score'] > 0.5]        
+        s_df = sentiment(scrapped[scrappedID],passedModel)
+        if passedModel != "lr":
+            score_df = s_df[s_df['score'] > 0.5]        
+        else:
+            score_df = s_df
 
         socketio.emit("high_traction",scrapped[scrappedID].head(4).to_json(orient="records"))
 

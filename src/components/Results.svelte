@@ -10,6 +10,7 @@
 
     export let tweets
     $:show = false;
+    let currTime = new Date();
 
     const loadedTweets = () => {
         console.log("loaded")
@@ -22,9 +23,10 @@
     let colLabels = ['positive','neutral','negative']
     const transform = () => {
         
-        results.push(isNan($store_results.positive) ? 0 : $store_results.positive )
-        results.push(isNan($store_results.neutral) ? 0 : $store_results.neutral)
-        results.push(isNan($store_results.negative) ? 0 : $store_results.negative)
+        results.push(isNaN($store_results.positive) ? 0 : $store_results.positive )
+        results.push(isNaN($store_results.neutral) ? 0 : $store_results.neutral)
+        results.push(isNaN($store_results.negative) ? 0 : $store_results.negative)
+        currTime = new Date();
     }
     // let data = {
     //     labels: colLabels,
@@ -87,6 +89,7 @@
 
         <h4 class="runtime">Total Runtime  <b>{$store_elapsedTime}</b></h4>
         <h4 class="runtime">Number of Tweets  <b>{$store_numTweets}</b></h4>
+        
         <h2>{$store_topic}</h2>
         {#if show == true}
             <PercentBar bind:this={progressBar}></PercentBar>
@@ -95,7 +98,7 @@
             <div use:chart={options}/>
             <!-- <Chart data={data} type="bar"></Chart> -->
         </div>
-        
+        <h4 class="runtime">{currTime.toLocaleString('en-MY')}</h4>
     </div>
 
 </div>

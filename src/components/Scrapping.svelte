@@ -29,6 +29,7 @@
         {/if}
     <div class="cont_scrapProgress">
         <Stopwatch bind:start={start}></Stopwatch>
+        <small>Please do not refresh or leave this page</small>
     </div>
 </div>
 <style>
@@ -49,6 +50,10 @@
 
 h4 {
     margin-top:0px;
+}
+
+small {
+    font-size: 0.9rem;
 }
 
 </style>
