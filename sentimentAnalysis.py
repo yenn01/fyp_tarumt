@@ -22,7 +22,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY']='secret!'
 socketio = SocketIO(app,async_mode = 'eventlet')
 
-id = 1;
+
+scrapped = [];
 
 def rmMention(passed):
     clean = re.sub(r'@\w+', '',passed)
@@ -37,7 +38,7 @@ def dedupe(df,threshold=0.85):
     return df_deduped,df_dupes
 
 
-def scrape(topic,limit=400):
+def scrape(topic,limit=100):
     c = twint.Config()
     c.Search = topic
     c.Limit = limit
@@ -90,6 +91,7 @@ def sentiment(df):
 
 
 
+idCounter = 0;
 
 @app.route('/')
 def base():
@@ -100,9 +102,10 @@ def home(path):
     return send_from_directory('public',path)
 
 @app.route('/scrape',methods=['GET','POST'])
-def analyse():
+def scrapeCall():
+    global idCounter
     try:
-        
+        global scrapped
         sentence = request.args.get('text')
 
         if not sentence:
@@ -115,18 +118,31 @@ def analyse():
         #Carry out cleaning, sends completed clean when done
         cleaned = clean_process(raw)
         
+        scrapped.append(cleaned)
 
-        #Carry out sentiment analysis on the rows of the dataframe
-        s_df = sentiment(cleaned)
+        return json.dumps({'success':True,'id':idCounter}), 200, {'ContentType':'application/json'} 
+        
+    except Exception as e:
+        print(e)
+    finally:
+        idCounter+=1
+    return "Error",400
+
+@app.route('/analyse',methods=['GET','POST'])
+def analyse():
+    
+    #Carry out sentiment analysis on the rows of the dataframe
+        scrappedID = int(request.args.get('id'))
+        if scrapped[scrappedID].empty:
+            return "Error",400
+
+        s_df = sentiment(scrapped[scrappedID])
         score_df = s_df[s_df['score'] > 0.5]        
 
-        socketio.emit("high_traction",cleaned.head(4).to_json(orient="records"))
+        socketio.emit("high_traction",scrapped[scrappedID].head(4).to_json(orient="records"))
 
         #Return the number of counts of tweets  
         return score_df['sentiment'].value_counts().to_json()
-    except Exception as e:
-        print(e)
-    return "Error",400
 
 # @app.route('scrapping',methods=['GET','POST'])
 # def scrapping():

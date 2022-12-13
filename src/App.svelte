@@ -45,34 +45,90 @@
         //console.log(eventMsg.detail)
         start = new Date()
         console.log(start)
-        getResults(eventMsg.detail)
-        
+        //getResults(eventMsg.detail)
+        beginAnalysis()
         
     }
 
-    async function getResults(passed) {
+    async function beginAnalysis(_topic) {
         let temp = $store_topic
-        if (!$store_topic) {
-             notifications.danger('No topics given.',4000)
-             return;        
-        }
-
         let url = "/scrape?text="+encodeURI(temp)
-        const res = await fetch(url).then(res => res.json()).then(
-            parsed => {
-                console.log(parsed)
-                $store_results = parsed
-
-
-                router.goto("/results")
-                
-                //response = arrMerge(parsed.labels,parsed.scores)
-                //console.log(JSON.stringify(response))
+            try {
+                //const scrapeProcess = await scrape(_topic)
+                const scrapeProcess = await (await fetch(url)).json()
+                //if(parsed.id != null) {
+                    console.log("Succeeded Scrape")
+                    console.log(scrapeProcess)
+                const analyseResults = await analysis(scrapeProcess)
+                //} 
+                return analyseResults
+            } catch (error) {
+                console.log(error)
             }
-        ).catch((e)=> {
-            console.error(e)
+    } 
+
+    async function analysis(_process) {
+        console.log(_process)
+        let url = "/analyse?id="+encodeURI(_process.id)
+        
+        const res = await fetch(url).then(res => res.json()).then(
+        parsed => {
+            console.log("Succeeded analysis")
+            console.log(parsed)
+            $store_results = parsed
+            router.goto("/results")
+            return parsed
         })
     }
+
+    // async function scrape(topic) {
+    //     if (!$store_topic) {
+    //          notifications.danger('No topics given.',4000)
+    //          return;        
+    //     }
+       
+        
+    //     const res = .then(res => res.json()).then(
+    //     parsed => {
+    //         console.log("internal parsed")
+    //         console.log(parsed)
+    //         return res
+    //     })
+    // }
+
+    // async function getResults(passed) {
+    //     let temp = $store_topic
+    //     if (!$store_topic) {
+    //          notifications.danger('No topics given.',4000)
+    //          return;        
+    //     }
+
+    //     let url = "/scrape?text="+encodeURI(temp)
+
+       
+
+        
+    //     const res = await fetch(url).then(res => res.json()).then(
+    //         parsed => {
+    //             console.log(parsed)
+    //             //$store_results = parsed
+    //             if (parsed.success) {
+    //                 console.log("Scrape succeeded")
+    //                 url = "/analyse?id="+encodeURI(parsed.id)
+    //                 const analyseRes =  await fetch(url).then(res => res.json()).then({
+
+    //                 })
+    //             }
+
+    //            // router.goto("/results")
+                
+    //             //response = arrMerge(parsed.labels,parsed.scores)
+    //             //console.log(JSON.stringify(response))
+    //         }
+    //     ).catch((e)=> {
+    //         console.error(e)
+    //     })
+    // }
 
 </script>
 
