@@ -20,7 +20,7 @@ analysis = pipeline(task="sentiment-analysis",model=model,tokenizer=tokenizer)
 
 app = Flask(__name__)
 app.config['SECRET_KEY']='secret!'
-socketio = SocketIO(app,async_mode = 'eventlet')
+socketio = SocketIO(app,async_mode = 'eventlet',ping_timeout=600)
 
 
 scrapped = [];
@@ -37,8 +37,8 @@ def dedupe(df,threshold=0.85):
     df_deduped = df.drop(df_dupes.index,axis=0)
     return df_deduped,df_dupes
 
-
-def scrape(topic,limit=500):
+#TODO : Add limit variable changes
+def scrape(topic,limit=5000):
     c = twint.Config()
     c.Search = topic
     c.Limit = limit
@@ -119,8 +119,8 @@ def scrapeCall():
         cleaned = clean_process(raw)
         
         scrapped.append(cleaned)
-
-        return json.dumps({'success':True,'id':idCounter}), 200, {'ContentType':'application/json'} 
+        numRow = len(cleaned.index)
+        return json.dumps({'success':True,'id':idCounter,'numRow':numRow}), 200, {'ContentType':'application/json'} 
         
     except Exception as e:
         print(e)

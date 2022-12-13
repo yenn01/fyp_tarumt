@@ -1,6 +1,7 @@
 <script>
     import {store_results} from '../stores/results';
     import {store_elapsedTime} from '../stores/elapsedTime'
+    import {store_numTweets} from '../stores/numTweets'
     import Tweet from '../components/Tweet.svelte'
     import { fade } from 'svelte/transition';
     import PercentBar from '../components/PercentBar.svelte'
@@ -20,9 +21,10 @@
     let results = [];
     let colLabels = ['positive','neutral','negative']
     const transform = () => {
-        results.push($store_results.positive)
-        results.push($store_results.neutral)
-        results.push($store_results.negative)
+        
+        results.push(isNan($store_results.positive) ? 0 : $store_results.positive )
+        results.push(isNan($store_results.neutral) ? 0 : $store_results.neutral)
+        results.push(isNan($store_results.negative) ? 0 : $store_results.negative)
     }
     // let data = {
     //     labels: colLabels,
@@ -84,6 +86,7 @@
     <div class="cont_r_right">
 
         <h4 class="runtime">Total Runtime  <b>{$store_elapsedTime}</b></h4>
+        <h4 class="runtime">Number of Tweets  <b>{$store_numTweets}</b></h4>
         <h2>{$store_topic}</h2>
         {#if show == true}
             <PercentBar bind:this={progressBar}></PercentBar>
@@ -145,5 +148,9 @@
 
     .cont_graph {
         padding: 5vh;
+    }
+    
+    h4 {
+        margin: 0px;
     }
 </style>

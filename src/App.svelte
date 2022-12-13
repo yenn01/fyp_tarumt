@@ -17,12 +17,19 @@
     import {store_topic} from './stores/topic'
     import {store_results} from './stores/results'  
     import { store_elapsedTime } from './stores/elapsedTime';
+    import { store_numTweets} from './stores/numTweets'
     import { store_processing } from './stores/processing';
-    let socket = io();
+    let socket = io({
+        timeout:300000
+    });
     let start;
 
     socket.on('connect', function() {
         console.log("Connected to WebSocket.")
+    });
+
+    socket.on('disconnect', function() {
+        console.log("Disconnected from WebSocket.")
     });
 
     socket.on('completed_scrape',() => {
@@ -72,7 +79,7 @@
         $store_processing = "analysing"
         console.log(_process)
         let url = "/analyse?id="+encodeURI(_process.id)
-        
+        $store_numTweets = _process.numRow
         const res = await fetch(url).then(res => res.json()).then(
         parsed => {
             console.log("Succeeded analysis")
