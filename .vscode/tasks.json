@@ -1,0 +1,57 @@
+{
+	"version": "2.0.0",
+    "options": {
+        "shell": {
+            "executable": "cmd.exe",
+            "args": [
+                "/c"
+            ]
+        }
+    },
+	"tasks": [
+        {
+            "type": "npm",
+            "script": "dev",
+            "problemMatcher": [],
+            "label": "npm: dev",
+            "detail": "rollup -c -w --port 55000",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "type": "npm",
+            "script": "build",
+            "group": "build",
+            "problemMatcher": [],
+            "label": "npm: build",
+            "detail": "rollup -c"
+        },
+        {
+            "label": "python run",
+            "type": "shell",
+            "command": "conda activate base && ${command:python.interpreterPath}",
+            "args": [
+                "sentimentAnalysis.py"
+            ],
+            "problemMatcher": [
+                "$eslint-compact"
+            ]
+        },
+        {
+            "label": "Build All",
+            "dependsOn": [
+                "npm: build",
+                "python run"
+            ],
+            "problemMatcher": [
+                "$eslint-compact"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
